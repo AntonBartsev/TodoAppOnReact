@@ -1,8 +1,10 @@
 import React from 'react';
 
+
 class TodoPoint extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             bIsImportant: false,
             bIsDone: false
