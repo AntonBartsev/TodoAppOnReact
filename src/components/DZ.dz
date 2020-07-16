@@ -1,11 +1,11 @@
-- Checkmarks (completed/not completed). When completed, text is zacherknut
-- CLEAR all tasks button
+- Checkmarks (completed/not completed). When completed, text is zacherknut DONE
+- CLEAR all tasks button DONE
 - Each task shows date when it was added (except initial tasks)
 - Buttons for sorting:
     - Date ascending/descending
     - Name ascending/descending
     - This is via dropdown
-- https://www.youtube.com/watch?v=XxVg_s8xAms
+- https://www.youtube.com/watch?v=XxVg_s8xAms DONE
 - Each feature in list above is at least one SEPARATE COMMIT
 - All of this is ONE PR
 - All of this is a github

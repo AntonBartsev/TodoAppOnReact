@@ -26,11 +26,8 @@ class TodoListXP extends React.Component {
         this.removeAllTasks = this.removeAllTasks.bind(this)
     }
 
-
-
     removeTask(text) {
         const { tasks } = this.state;
-
         const newState = {
             ...this.state,
             tasks: tasks.filter(elem => elem != text)
