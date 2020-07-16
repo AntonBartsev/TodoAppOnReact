@@ -6,7 +6,6 @@ const todoStyle = {
 }
 
 
-
 class TodoListXP extends React.Component {
     constructor(props) {
         super(props);
@@ -17,7 +16,7 @@ class TodoListXP extends React.Component {
                 "another one",
                 "last one to do"
             ],
-            input: "nichego net"
+            input: ""
         };
 
         this.addTask = this.addTask.bind(this);
