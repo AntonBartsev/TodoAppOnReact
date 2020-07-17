@@ -1,6 +1,6 @@
 - Checkmarks (completed/not completed). When completed, text is zacherknut DONE
 - CLEAR all tasks button DONE
-- Each task shows date when it was added (except initial tasks)
+- Each task shows date when it was added (except initial tasks) DONE
 - Buttons for sorting:
     - Date ascending/descending
     - Name ascending/descending
