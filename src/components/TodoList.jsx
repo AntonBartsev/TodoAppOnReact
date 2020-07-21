@@ -26,6 +26,7 @@ class TodoListXP extends React.Component {
         this.sortTasks = this.sortTasks.bind(this)
     }
 
+
     sortTasks(event) {
         const { tasks } = this.state
         const option = event.target.value
@@ -58,6 +59,7 @@ class TodoListXP extends React.Component {
         this.setState(newState)
     }
 
+
     taskTexts = () => {
         const taskNames = []
         for (const task of this.state.tasks) {
@@ -65,6 +67,19 @@ class TodoListXP extends React.Component {
         }
         return taskNames
     }
+
+
+    changeText = (text, newText) => {
+        const { tasks } = this.state
+        const id = this.taskTexts().indexOf(text)
+        tasks[id].taskName = newText
+        this.setState({
+            ...this.state,
+            tasks: tasks
+        })
+    }
+
+
     removeTask(text) {
         const { tasks } = this.state
         tasks.splice(this.taskTexts().indexOf(text), 1)
@@ -81,6 +96,8 @@ class TodoListXP extends React.Component {
             tasks: tasks.concat({ taskName: this.state.input, date: new Date() })
         });
     }
+
+
 
     onInputChange(event) {
         const text = event.target.value;
@@ -109,8 +126,8 @@ class TodoListXP extends React.Component {
                 <input type="text" value={this.state.input} onChange={this.onInputChange}></input>
                 <button onClick={this.removeAllTasks}>Remove Tasks</button>
             </div>
-            <ul style={todoStyle}>{
-                this.state.tasks.map(text => <TodoPoint key={this.state.tasks.indexOf(text)} todoText={text.taskName} removeTask={this.removeTask} todoDate={text.date.toUTCString().slice(0, 22)} />)
+            <ul id="todoPoints" style={todoStyle} >{
+                this.state.tasks.map(text => <TodoPoint key={this.state.tasks.indexOf(text)} todoText={text.taskName} removeTask={this.removeTask} todoDate={text.date.toUTCString().slice(0, 22)} changeText={this.changeText} oneInEdit={this.state.bIsOneTaskInEdit} />)
             }</ul>
         </div>
 
