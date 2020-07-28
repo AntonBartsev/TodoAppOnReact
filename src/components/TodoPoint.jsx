@@ -5,14 +5,20 @@ const todoPointStyle = {
     marginBottom: "5px"
 }
 const todoDateStyle = {
-    fontSize: "15px"
+    fontSize: "15px",
+    marginBlockStart: "0em",
+    marginBlockEnd: "0em"
+
 }
+
 
 class TodoPoint extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            // If task marked as important
             bIsImportant: false,
+            // If task marked as done
             bIsDone: false
         };
         this.toggleImportant = this.toggleImportant.bind(this);
@@ -54,9 +60,22 @@ class TodoPoint extends React.Component {
 
     // Decide whether render input or li element for task text
     getTaskTextElem(todoText) {
-        const TaskInEditElem = <input onKeyDown={this.updateEditedTaskText} type="text" defaultValue={todoText} ></input>
-        const DefaultElem = <li style={{ textDecoration: this.getDoneStyle(), width: "150px", color: this.getTextColor() }} onClick={() => this.props.setTaskInEditText(todoText)}>
-            {todoText}</li >
+        const TaskInEditElem = <input
+            onKeyDown={this.updateEditedTaskText}
+            type="text"
+            defaultValue={todoText}
+        />
+
+        const DefaultElem = <li
+            style={{
+                textDecoration: this.getDoneStyle(),
+                width: "150px",
+                color: this.getTextColor()
+            }}
+            onClick={() => this.props.setTaskInEditText(todoText)}>
+            {todoText}
+        </li >
+
         let CurrentElem = DefaultElem
         // Render input element for task text 
         if (todoText === this.props.taskInEditText)
@@ -71,7 +90,7 @@ class TodoPoint extends React.Component {
             <button onClick={() => removeTask(todoText)} >X</button>
             <button onClick={this.toggleImportant} >!</button>
             <button onClick={this.toggleDone}>✓</button>
-            <ul style={todoDateStyle}>{todoDate}</ul>
+            <p style={todoDateStyle}>{todoDate}</p>
         </div>
     }
 }

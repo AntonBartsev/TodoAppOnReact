@@ -1,43 +1,26 @@
 import React from 'react';
 import TodoPoint from './TodoPoint';
-import formatDate from './utils';
+import { formatDate, filterTasks, sortingOptions } from './utils';
 
 const todoStyle = {
     display: "inline-block"
-}
-// Sort users by several categories
-const filterTasks = (sortingOpt) => {
-    {
-        switch (sortingOpt) {
-            // Sort by name ascending 
-            case "Name asc":
-                return (task1, task2) => (task1.taskName.toLowerCase() > task2.taskName.toLowerCase()) ? 1 : -1
-            // Sort by name descending 
-            case "Name desc":
-                return (task1, task2) => (task1.taskName.toLowerCase() < task2.taskName.toLowerCase()) ? 1 : -1
-            // Sort by newer tasks
-            case "Newer":
-                return ((task1, task2) => (task2.date - task1.date))
-            // Sort by older tasks
-            case "Older":
-                return (task1, task2) => (task1.date - task2.date)
-            default:
-                console.log("'Sort by' opt set or somthg went wrong")
-        }
-    }
 }
 
 class TodoListXP extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            // Array of todo elements as objects
             tasks: [
                 { taskName: "do one thing", date: new Date() },
                 { taskName: "another one", date: new Date() },
                 { taskName: "last one to do", date: new Date() }
             ],
+            // Main input field text value
             input: "",
-            sortingOpt: "Sort by",
+            // Current soring option to sort tasks 
+            sortingOption: "Sort by",
+            // Initial text of task that user is editing 
             taskInEditText: ""
         };
         this.addTask = this.addTask.bind(this);
@@ -49,10 +32,10 @@ class TodoListXP extends React.Component {
         this.setNewTaskText = this.setNewTaskText.bind(this)
     }
     // Set text of task in edit mode 
-    setTaskInEditText(taskInEditText) {
+    setTaskInEditText(taskText) {
         this.setState({
             ...this.state,
-            taskInEditText: taskInEditText
+            taskInEditText: taskText
         })
     }
     // Change name of task
@@ -62,7 +45,7 @@ class TodoListXP extends React.Component {
         tasks[id].taskName = newText
         this.setState({
             ...this.state,
-            tasks: tasks
+            tasks
         })
     }
     // Update state with sorted tasks
@@ -72,7 +55,7 @@ class TodoListXP extends React.Component {
         this.setState({
             ...this.state,
             tasks: tasks.sort(filterTasks(option)),
-            sortingOpt: option
+            sortingOption: option
         });
     }
 
@@ -95,7 +78,7 @@ class TodoListXP extends React.Component {
     }
 
     addTask() {
-        const { tasks, sortingOpt } = this.state;
+        const { tasks, sortingOption: sortingOpt } = this.state;
         const newTask = {
             taskName: this.state.input,
             date: new Date()
@@ -132,14 +115,24 @@ class TodoListXP extends React.Component {
     }
 
     render() {
-        const sortingOpts = ["Sort by", "Newer", "Older", "Name asc", "Name desc"]
         return <div>
             <div>
-                <select onChange={this.sortTasks}>
-                    {sortingOpts.map(option => <option key={sortingOpts.indexOf(option)}>{option}</option>)}
+                <select
+                    onChange={this.sortTasks}>
+                    {
+                        sortingOptions.map(option =>
+                            <option
+                                key={sortingOptions.indexOf(option)}>
+                                {option}
+                            </option>)
+                    }
                 </select>
                 <button onClick={this.addTask}>Add Task</button>
-                <input type="text" value={this.state.input} onChange={this.onInputChange}></input>
+                <input
+                    type="text"
+                    value={this.state.input}
+                    onChange={this.onInputChange}
+                />
                 <button onClick={this.removeAllTasks}>Remove Tasks</button>
             </div>
             <ul id="todoPoints"
