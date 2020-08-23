@@ -8,7 +8,6 @@ const todoDateStyle = {
     fontSize: "15px",
     marginBlockStart: "0em",
     marginBlockEnd: "0em"
-
 }
 
 
@@ -23,15 +22,15 @@ class TodoPoint extends React.Component {
         };
         this.toggleImportant = this.toggleImportant.bind(this);
         this.toggleDone = this.toggleDone.bind(this);
-        this.updateEditedTaskText = this.updateEditedTaskText.bind(this)
+        this.updateEditedTaskText = this.updateEditedTaskText.bind(this);
     }
     // Set new text after editing task 
     updateEditedTaskText(event) {
-        const newText = event.target.value;
-        const oldText = event.target.defaultValue
+        const newText = event.target.value
         if (event.key === 'Enter') {
-            this.props.setNewTaskText(oldText, newText)
+            this.props.setNewTaskText(newText)
         }
+
     }
 
     toggleImportant() {
@@ -39,7 +38,8 @@ class TodoPoint extends React.Component {
             ...this.state,
             bIsImportant: !this.state.bIsImportant
         });
-
+        console.log(this.state.bIsImportant)
+        this.props.setTaskColor(this.props.todoId, !this.state.bIsImportant)
     }
 
     toggleDone() {
@@ -49,45 +49,42 @@ class TodoPoint extends React.Component {
                 bIsDone: !this.state.bIsDone
             }
         )
-    }
-    getDoneStyle() {
-        return this.state.bIsDone ? "line-through" : ""
-    }
-
-    getTextColor() {
-        return this.state.bIsImportant ? "red" : "black";
+        this.props.setTaskTextDec(this.props.todoId, !this.state.bIsDone)
     }
 
     // Decide whether render input or li element for task text
     getTaskTextElem(todoText) {
+        const { todoId, bIsEdited, setTaskInEditId, color, textDec } = this.props
+
         const TaskInEditElem = <input
-            onKeyDown={this.updateEditedTaskText}
+            onKeyDown={
+                this.updateEditedTaskText
+            }
             type="text"
             defaultValue={todoText}
         />
-
         const DefaultElem = <li
             style={{
-                textDecoration: this.getDoneStyle(),
                 width: "150px",
-                color: this.getTextColor()
+                textDecoration: textDec,
+                color: color,
+
             }}
-            onClick={() => this.props.setTaskInEditText(todoText)}>
+            onClick={() =>
+                setTaskInEditId(todoId)
+            }>
             {todoText}
         </li >
-
-        let CurrentElem = DefaultElem
-        // Render input element for task text 
-        if (todoText === this.props.taskInEditText)
-            CurrentElem = TaskInEditElem
+        let CurrentElem
+        bIsEdited ? CurrentElem = TaskInEditElem : CurrentElem = DefaultElem
         return CurrentElem
     }
 
     render() {
-        const { removeTask, todoText, todoDate } = this.props;
+        const { removeTask, todoText, todoDate, todoId } = this.props;
         return <div style={todoPointStyle}>
             {this.getTaskTextElem(todoText)}
-            <button onClick={() => removeTask(todoText)} >X</button>
+            <button onClick={() => removeTask(todoId)} >X</button>
             <button onClick={this.toggleImportant} >!</button>
             <button onClick={this.toggleDone}>✓</button>
             <p style={todoDateStyle}>{todoDate}</p>

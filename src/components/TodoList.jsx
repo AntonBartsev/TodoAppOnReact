@@ -12,40 +12,65 @@ class TodoListXP extends React.Component {
         this.state = {
             // Array of todo elements as objects
             tasks: [
-                { taskName: "do one thing", date: new Date() },
-                { taskName: "another one", date: new Date() },
-                { taskName: "last one to do", date: new Date() }
+                { taskName: "do one thing", date: new Date(), id: 0, color: "", textDecoration: "" },
+                { taskName: "another one", date: new Date(), id: 1, color: "", textDecoration: "" },
+                { taskName: "last one to do", date: new Date(), id: 2, color: "", textDecoration: "" }
             ],
             // Main input field text value
             input: "",
             // Current soring option to sort tasks 
             sortingOption: "Sort by",
-            // Initial text of task that user is editing 
-            taskInEditText: ""
+            taskInEditId: -1,
+            lastCreatedId: 2
+
         };
         this.addTask = this.addTask.bind(this);
         this.removeTask = this.removeTask.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
-        this.removeAllTasks = this.removeAllTasks.bind(this)
-        this.sortTasks = this.sortTasks.bind(this)
-        this.setTaskInEditText = this.setTaskInEditText.bind(this)
-        this.setNewTaskText = this.setNewTaskText.bind(this)
+        this.removeAllTasks = this.removeAllTasks.bind(this);
+        this.sortTasks = this.sortTasks.bind(this);
+        this.setTaskInEditId = this.setTaskInEditId.bind(this);
+        this.setNewTaskText = this.setNewTaskText.bind(this);
+        this.setTaskColor = this.setTaskColor.bind(this);
+        this.setTaskTextDecoration = this.setTaskTextDecoration.bind(this)
     }
+
+    setTaskColor(taskId, boolean) {
+        const { tasks } = this.state
+        for (const task of tasks) {
+            if (task.id === taskId)
+                boolean ? task.color = "red" : task.color = "black"
+        }
+        this.setState({
+            ...this.state
+        })
+    }
+    setTaskTextDecoration(taskId, boolean) {
+        const { tasks } = this.state
+        for (const task of tasks) {
+            if (task.id === taskId)
+                boolean ? task.textDecoration = "line-through" : task.textDecoration = ""
+        }
+        this.setState({
+            ...this.state
+        })
+    }
+
     // Set text of task in edit mode 
-    setTaskInEditText(taskText) {
+    setTaskInEditId(todoId) {
         this.setState({
             ...this.state,
-            taskInEditText: taskText
+            taskInEditId: todoId
         })
     }
     // Change name of task
-    setNewTaskText(text, newText) {
-        const { tasks } = this.state
-        const id = this.getTaskNames().indexOf(text)
-        tasks[id].taskName = newText
+    setNewTaskText(newText) {
+        const { tasks, taskInEditId } = this.state
+        tasks[taskInEditId].taskName = newText
         this.setState({
             ...this.state,
-            tasks
+            tasks,
+            taskInEditId: -1
         })
     }
     // Update state with sorted tasks
@@ -68,28 +93,36 @@ class TodoListXP extends React.Component {
         return taskNames
     }
 
-    removeTask(todoPointName) {
+    removeTask(taskId) {
         const { tasks } = this.state;
-        tasks.splice(this.getTaskNames().indexOf(todoPointName), 1)
+        for (const task of tasks) {
+            if (task.id === taskId)
+                tasks.splice(tasks.indexOf(task), 1)
+        }
         const newState = {
             ...this.state
         };
         this.setState(newState);
     }
 
+
+
     addTask() {
-        const { tasks, sortingOption: sortingOpt } = this.state;
+        const { tasks, sortingOption: sortingOpt, lastCreatedId } = this.state;
         const newTask = {
             taskName: this.state.input,
-            date: new Date()
-        };
+            date: new Date(),
+            id: lastCreatedId + 1,
+            color: "",
+            textDecoration: ""
+        }
         // Sort task as it added
         const newTasks = tasks.concat(newTask).sort(filterTasks(sortingOpt));
-        const newState = {
+        this.setState({
             input: "",
-            tasks: newTasks
-        }
-        this.setState(newState);
+            tasks: newTasks,
+            lastCreatedId: lastCreatedId + 1
+        });
     }
 
     onInputChange(event) {
@@ -115,7 +148,7 @@ class TodoListXP extends React.Component {
     }
 
     render() {
-        return <div>
+        return <>
             <div>
                 <select
                     onChange={this.sortTasks}>
@@ -140,14 +173,20 @@ class TodoListXP extends React.Component {
                     this.mapTasks(todoPoint => <TodoPoint
                         key={this.getKeyForTodoElem(todoPoint)}
                         todoText={todoPoint.taskName}
+                        todoId={todoPoint.id}
+                        bIsEdited={todoPoint.id === this.state.taskInEditId}
                         removeTask={this.removeTask}
                         todoDate={formatDate(todoPoint)}
                         taskInEditText={this.state.taskInEditText}
-                        setTaskInEditText={this.setTaskInEditText}
+                        setTaskInEditId={this.setTaskInEditId}
+                        taskInEditId={this.state.taskInEditId}
                         setNewTaskText={this.setNewTaskText}
+                        setTaskColor={this.setTaskColor}
+                        setTaskTextDec={this.setTaskTextDecoration}
+                        color={todoPoint.color}
+                        textDec={todoPoint.textDecoration}
                     />)}</ul>
-        </div>
-
+        </>
     }
 }
 
