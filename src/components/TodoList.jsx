@@ -10,19 +10,31 @@ class TodoListXP extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // Array of todo elements as objects
+            // Array of todo elements as objects { name of task, 
+            // date when task added, id of task, color of task, 
+            // text decoration style of task }
             tasks: [
-                { taskName: "do one thing", date: new Date(), id: 0, color: "", textDecoration: "" },
-                { taskName: "another one", date: new Date(), id: 1, color: "", textDecoration: "" },
-                { taskName: "last one to do", date: new Date(), id: 2, color: "", textDecoration: "" }
+                {
+                    taskName: "do one thing", date: new Date(),
+                    id: 0, color: "", textDecoration: ""
+                },
+                {
+                    taskName: "another one", date: new Date(),
+                    id: 1, color: "", textDecoration: ""
+                },
+                {
+                    taskName: "last one to do", date: new Date(),
+                    id: 2, color: "", textDecoration: ""
+                }
             ],
             // Main input field text value
             input: "",
             // Current soring option to sort tasks 
             sortingOption: "Sort by",
+            // Id of task in edit mode
             taskInEditId: -1,
+            // Id of last created task
             lastCreatedId: 2
-
         };
         this.addTask = this.addTask.bind(this);
         this.removeTask = this.removeTask.bind(this);
@@ -34,22 +46,25 @@ class TodoListXP extends React.Component {
         this.setTaskColor = this.setTaskColor.bind(this);
         this.setTaskTextDecoration = this.setTaskTextDecoration.bind(this)
     }
-
-    setTaskColor(taskId, boolean) {
+    // Set color of task
+    setTaskColor(taskId, bIsImportant) {
         const { tasks } = this.state
         for (const task of tasks) {
             if (task.id === taskId)
-                boolean ? task.color = "red" : task.color = "black"
+                bIsImportant ? task.color = "red"
+                    : task.color = "black"
         }
         this.setState({
             ...this.state
         })
     }
-    setTaskTextDecoration(taskId, boolean) {
+    // Set text deoration style of task
+    setTaskTextDecoration(taskId, bIsDone) {
         const { tasks } = this.state
         for (const task of tasks) {
             if (task.id === taskId)
-                boolean ? task.textDecoration = "line-through" : task.textDecoration = ""
+                bIsDone ? task.textDecoration = "line-through"
+                    : task.textDecoration = ""
         }
         this.setState({
             ...this.state
@@ -92,11 +107,12 @@ class TodoListXP extends React.Component {
         }
         return taskNames
     }
-
+    // Remove task
     removeTask(taskId) {
         const { tasks } = this.state;
         for (const task of tasks) {
             if (task.id === taskId)
+                // Remove task by id in array of tasks but not id from the property "id"
                 tasks.splice(tasks.indexOf(task), 1)
         }
         const newState = {
@@ -104,11 +120,10 @@ class TodoListXP extends React.Component {
         };
         this.setState(newState);
     }
-
-
-
+    // Add task
     addTask() {
-        const { tasks, sortingOption: sortingOpt, lastCreatedId } = this.state;
+        const { tasks, sortingOption, lastCreatedId } = this.state;
+        // Set properties of the new task
         const newTask = {
             taskName: this.state.input,
             date: new Date(),
@@ -117,7 +132,7 @@ class TodoListXP extends React.Component {
             textDecoration: ""
         }
         // Sort task as it added
-        const newTasks = tasks.concat(newTask).sort(filterTasks(sortingOpt));
+        const newTasks = tasks.concat(newTask).sort(filterTasks(sortingOption));
         this.setState({
             input: "",
             tasks: newTasks,
@@ -138,7 +153,6 @@ class TodoListXP extends React.Component {
             }
         )
     }
-
     mapTasks(mapArgument) {
         return this.state.tasks.map(mapArgument)
     }
