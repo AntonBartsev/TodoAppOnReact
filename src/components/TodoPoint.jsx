@@ -30,32 +30,35 @@ class TodoPoint extends React.Component {
         if (event.key === 'Enter') {
             this.props.setNewTaskText(newText)
         }
-
     }
-
+    // Set property "bIsImportant"
     toggleImportant() {
+        const {todoId} = this.props
+        const {bIsImportant} = this.state
         this.setState({
             ...this.state,
-            bIsImportant: !this.state.bIsImportant
+            bIsImportant: !bIsImportant
         });
-        console.log(this.state.bIsImportant)
-        this.props.setTaskColor(this.props.todoId, !this.state.bIsImportant)
+        // Set new task color after task marked as important or not important
+        this.props.setTaskColor(todoId, !bIsImportant)
     }
-
+    // Set property "bIsDone"
     toggleDone() {
+        const {todoId} = this.props
+        const {bIsDone} = this.state
         this.setState(
             {
                 ...this.state,
-                bIsDone: !this.state.bIsDone
+                bIsDone: !bIsDone
             }
         )
-        this.props.setTaskTextDec(this.props.todoId, !this.state.bIsDone)
+        // Set new task text decoration style if task marked as done or not done
+        this.props.setTaskTextDec(todoId, !bIsDone)
     }
 
     // Decide whether render input or li element for task text
     getTaskTextElem(todoText) {
         const { todoId, bIsEdited, setTaskInEditId, color, textDec } = this.props
-
         const TaskInEditElem = <input
             onKeyDown={
                 this.updateEditedTaskText
@@ -68,13 +71,13 @@ class TodoPoint extends React.Component {
                 width: "150px",
                 textDecoration: textDec,
                 color: color,
-
             }}
             onClick={() =>
                 setTaskInEditId(todoId)
             }>
             {todoText}
         </li >
+
         let CurrentElem
         bIsEdited ? CurrentElem = TaskInEditElem : CurrentElem = DefaultElem
         return CurrentElem
