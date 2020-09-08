@@ -1,7 +1,7 @@
 import React from 'react';
 import TodoPoint from './TodoPoint';
 import { formatDate, filterTasks, sortingOptions } from './utils';
-
+import { List } from 'immutable'
 const todoStyle = {
     display: "inline-block"
 }
@@ -9,24 +9,39 @@ const todoStyle = {
 class TodoListXP extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            // Array of todo elements as objects { name of task, 
-            // date when task added, id of task, color of task, 
-            // text decoration style of task }
-            tasks: [
+        // Array of todo elements as objects { name of task, 
+        // date when task added, id of task, color of task, 
+        // text decoration style of task }
+        const newTasks =
+            [
                 {
-                    taskName: "do one thing", date: new Date(),
-                    id: 0, color: "", textDecoration: ""
+                    taskName: "do one thing",
+                    date: new Date(),
+                    id: 0,
+                    color: "",
+                    textDecoration: ""
                 },
                 {
-                    taskName: "another one", date: new Date(),
-                    id: 1, color: "", textDecoration: ""
+                    taskName: "another one",
+                    date: new Date(),
+                    id: 1,
+                    color: "",
+                    textDecoration: ""
                 },
                 {
-                    taskName: "last one to do", date: new Date(),
-                    id: 2, color: "", textDecoration: ""
+                    taskName: "last one to do",
+                    date: new Date(),
+                    id: 2,
+                    color: "",
+                    textDecoration: ""
                 }
-            ],
+            ];
+        for (let task of newTasks) {
+            Object.freeze(task)
+        };
+        this.state = {
+
+            tasks: List(newTasks),
             // Main input field text value
             input: "",
             // Current soring option to sort tasks 
@@ -49,25 +64,29 @@ class TodoListXP extends React.Component {
     // Set color of task
     setTaskColor(taskId, bIsImportant) {
         const { tasks } = this.state
-        for (const task of tasks) {
-            if (task.id === taskId)
-                bIsImportant ? task.color = "red"
-                    : task.color = "black"
-        }
         this.setState({
-            ...this.state
+            ...this.state,
+            tasks: tasks.map(task => task.id === taskId
+                ? (({
+                    ...task,
+                    color: bIsImportant ? "red" : "black"
+                }))
+                : task
+            )
         })
     }
     // Set text deoration style of task
     setTaskTextDecoration(taskId, bIsDone) {
         const { tasks } = this.state
-        for (const task of tasks) {
-            if (task.id === taskId)
-                bIsDone ? task.textDecoration = "line-through"
-                    : task.textDecoration = ""
-        }
         this.setState({
-            ...this.state
+            ...this.state,
+            tasks: tasks.map(task => task.id === taskId
+                ? (({
+                    ...task,
+                    textDecoration: bIsDone ? "line-through" : ""
+                }))
+                : task
+            )
         })
     }
 
@@ -81,10 +100,11 @@ class TodoListXP extends React.Component {
     // Change name of task
     setNewTaskText(newText) {
         const { tasks, taskInEditId } = this.state
-        tasks[taskInEditId].taskName = newText
         this.setState({
             ...this.state,
-            tasks,
+            tasks: tasks.map(task => task.id === taskInEditId
+                ? ({ ...task, taskName: newText })
+                : task),
             taskInEditId: -1
         })
     }
@@ -99,24 +119,12 @@ class TodoListXP extends React.Component {
         });
     }
 
-    // Array of names of tasks
-    getTaskNames() {
-        const taskNames = [];
-        for (const task of this.state.tasks) {
-            taskNames.push(task.taskName)
-        }
-        return taskNames
-    }
     // Remove task
     removeTask(taskId) {
         const { tasks } = this.state;
-        for (const task of tasks) {
-            if (task.id === taskId)
-                // Remove task by id in array of tasks but not id from the property "id"
-                tasks.splice(tasks.indexOf(task), 1)
-        }
         const newState = {
-            ...this.state
+            ...this.state,
+            tasks: tasks.filter(task => task.id !== taskId)
         };
         this.setState(newState);
     }
@@ -131,6 +139,7 @@ class TodoListXP extends React.Component {
             color: "",
             textDecoration: ""
         }
+        Object.freeze(newTask)
         // Sort task as it added
         const newTasks = tasks.concat(newTask).sort(filterTasks(sortingOption));
         this.setState({
@@ -142,7 +151,10 @@ class TodoListXP extends React.Component {
 
     onInputChange(event) {
         const text = event.target.value;
-        this.setState({ ...this.state, input: text })
+        this.setState({
+            ...this.state,
+            input: text
+        })
     }
 
     removeAllTasks() {
@@ -191,9 +203,7 @@ class TodoListXP extends React.Component {
                         bIsEdited={todoPoint.id === this.state.taskInEditId}
                         removeTask={this.removeTask}
                         todoDate={formatDate(todoPoint)}
-                        taskInEditText={this.state.taskInEditText}
                         setTaskInEditId={this.setTaskInEditId}
-                        taskInEditId={this.state.taskInEditId}
                         setNewTaskText={this.setNewTaskText}
                         setTaskColor={this.setTaskColor}
                         setTaskTextDec={this.setTaskTextDecoration}

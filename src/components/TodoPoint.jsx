@@ -33,8 +33,8 @@ class TodoPoint extends React.Component {
     }
     // Set property "bIsImportant"
     toggleImportant() {
-        const {todoId} = this.props
-        const {bIsImportant} = this.state
+        const { todoId } = this.props
+        const { bIsImportant } = this.state
         this.setState({
             ...this.state,
             bIsImportant: !bIsImportant
@@ -44,8 +44,8 @@ class TodoPoint extends React.Component {
     }
     // Set property "bIsDone"
     toggleDone() {
-        const {todoId} = this.props
-        const {bIsDone} = this.state
+        const { todoId } = this.props
+        const { bIsDone } = this.state
         this.setState(
             {
                 ...this.state,
@@ -77,10 +77,10 @@ class TodoPoint extends React.Component {
             }>
             {todoText}
         </li >
-
-        let CurrentElem
-        bIsEdited ? CurrentElem = TaskInEditElem : CurrentElem = DefaultElem
-        return CurrentElem
+        if (bIsEdited)
+            return TaskInEditElem
+        else if (!bIsEdited)
+            return DefaultElem
     }
 
     render() {
