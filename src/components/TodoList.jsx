@@ -11,7 +11,8 @@ class TodoListXP extends React.Component {
         super(props);
         // Array of todo elements as objects { name of task, 
         // date when task added, id of task, color of task, 
-        // text decoration style of task }
+        // text decoration style of task, is task marked as done info,
+        // is task marked as important info}
         const newTasks =
             [
                 {
@@ -19,28 +20,33 @@ class TodoListXP extends React.Component {
                     date: new Date(),
                     id: 0,
                     color: "",
-                    textDecoration: ""
+                    textDecoration: "",
+                    bIsDone: false,
+                    bIsImportant: false
                 },
                 {
                     taskName: "another one",
                     date: new Date(),
                     id: 1,
                     color: "",
-                    textDecoration: ""
+                    textDecoration: "",
+                    bIsDone: false,
+                    bIsImportant: false
                 },
                 {
                     taskName: "last one to do",
                     date: new Date(),
                     id: 2,
                     color: "",
-                    textDecoration: ""
+                    textDecoration: "",
+                    bIsDone: false,
+                    bIsImportant: false
                 }
             ];
         for (let task of newTasks) {
             Object.freeze(task)
         };
         this.state = {
-
             tasks: List(newTasks),
             // Main input field text value
             input: "",
@@ -61,29 +67,30 @@ class TodoListXP extends React.Component {
         this.setTaskColor = this.setTaskColor.bind(this);
         this.setTaskTextDecoration = this.setTaskTextDecoration.bind(this)
     }
-    // Set color of task
-    setTaskColor(taskId, bIsImportant) {
+    setTaskColor(taskId) {
         const { tasks } = this.state
         this.setState({
             ...this.state,
             tasks: tasks.map(task => task.id === taskId
                 ? (({
                     ...task,
-                    color: bIsImportant ? "red" : "black"
+                    bIsImportant: !task.bIsImportant,
+                    color: !task.bIsImportant ? "red" : "black"
                 }))
                 : task
             )
         })
     }
     // Set text deoration style of task
-    setTaskTextDecoration(taskId, bIsDone) {
+    setTaskTextDecoration(taskId) {
         const { tasks } = this.state
         this.setState({
             ...this.state,
             tasks: tasks.map(task => task.id === taskId
                 ? (({
                     ...task,
-                    textDecoration: bIsDone ? "line-through" : ""
+                    bIsDone: !task.bIsDone,
+                    textDecoration: !task.bIsDone ? "line-through" : ""
                 }))
                 : task
             )
@@ -130,17 +137,21 @@ class TodoListXP extends React.Component {
     }
     // Add task
     addTask() {
-        const { tasks, sortingOption, lastCreatedId } = this.state;
+        const { tasks, sortingOption, lastCreatedId, input } = this.state;
+        if (input.trim().length === 0)
+            return
         // Set properties of the new task
         const newTask = {
-            taskName: this.state.input,
+            taskName: input,
             date: new Date(),
             id: lastCreatedId + 1,
             color: "",
-            textDecoration: ""
+            textDecoration: "",
+            bIsDone: false,
+            bIsImportant: false
         }
         Object.freeze(newTask)
-        // Sort task as it added
+        // Sort task as it added 
         const newTasks = tasks.concat(newTask).sort(filterTasks(sortingOption));
         this.setState({
             input: "",
@@ -173,10 +184,12 @@ class TodoListXP extends React.Component {
         return this.state.tasks.indexOf(todoPoint)
     }
 
+
     render() {
         return <>
             <div>
                 <select
+                    style={{ height: "25px" }}
                     onChange={this.sortTasks}>
                     {
                         sortingOptions.map(option =>
@@ -186,13 +199,23 @@ class TodoListXP extends React.Component {
                             </option>)
                     }
                 </select>
-                <button onClick={this.addTask}>Add Task</button>
+                <button
+                    style={{ height: "25px" }}
+                    onClick={this.addTask}>Add Task</button>
                 <input
+                    style={{ height: "19px" }}
+                    onKeyPress={event => {
+                        if (event.key === 'Enter') {
+                            this.addTask()
+                        }
+                    }}
                     type="text"
                     value={this.state.input}
                     onChange={this.onInputChange}
                 />
-                <button onClick={this.removeAllTasks}>Remove Tasks</button>
+                <button
+                    style={{ height: "25px" }}
+                    onClick={this.removeAllTasks}>Remove Tasks</button>
             </div>
             <ul id="todoPoints"
                 style={todoStyle} >{

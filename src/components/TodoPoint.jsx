@@ -14,12 +14,6 @@ const todoDateStyle = {
 class TodoPoint extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            // If task marked as important
-            bIsImportant: false,
-            // If task marked as done
-            bIsDone: false
-        };
         this.toggleImportant = this.toggleImportant.bind(this);
         this.toggleDone = this.toggleDone.bind(this);
         this.updateEditedTaskText = this.updateEditedTaskText.bind(this);
@@ -31,29 +25,17 @@ class TodoPoint extends React.Component {
             this.props.setNewTaskText(newText)
         }
     }
-    // Set property "bIsImportant"
+    // Set text color depending on id of task marked as important
     toggleImportant() {
-        const { todoId } = this.props
-        const { bIsImportant } = this.state
-        this.setState({
-            ...this.state,
-            bIsImportant: !bIsImportant
-        });
+        const { todoId, setTaskColor } = this.props
         // Set new task color after task marked as important or not important
-        this.props.setTaskColor(todoId, !bIsImportant)
+        setTaskColor(todoId)
     }
-    // Set property "bIsDone"
+    // Set text style depending on id of task marked as done
     toggleDone() {
-        const { todoId } = this.props
-        const { bIsDone } = this.state
-        this.setState(
-            {
-                ...this.state,
-                bIsDone: !bIsDone
-            }
-        )
+        const { todoId, setTaskTextDec } = this.props
         // Set new task text decoration style if task marked as done or not done
-        this.props.setTaskTextDec(todoId, !bIsDone)
+        setTaskTextDec(todoId)
     }
 
     // Decide whether render input or li element for task text
@@ -82,7 +64,6 @@ class TodoPoint extends React.Component {
         else if (!bIsEdited)
             return DefaultElem
     }
-
     render() {
         const { removeTask, todoText, todoDate, todoId } = this.props;
         return <div style={todoPointStyle}>
@@ -90,7 +71,8 @@ class TodoPoint extends React.Component {
             <button onClick={() => removeTask(todoId)} >X</button>
             <button onClick={this.toggleImportant} >!</button>
             <button onClick={this.toggleDone}>✓</button>
-            <p style={todoDateStyle}>{todoDate}</p>
+            &nbsp;&nbsp;
+                <p style={todoDateStyle}>{todoDate}</p>
         </div>
     }
 }
