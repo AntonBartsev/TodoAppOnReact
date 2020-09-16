@@ -1,6 +1,6 @@
 import React from 'react';
 import TodoPoint from './TodoPoint';
-import { formatDate, filterTasks, sortingOptions } from './utils';
+import { formatDate, sortTasks, sortingOptions } from './utils';
 import { List } from 'immutable'
 const todoStyle = {
     display: "inline-block"
@@ -53,7 +53,7 @@ class TodoListXP extends React.Component {
             // Current soring option to sort tasks 
             sortingOption: "Sort by",
             // Id of task in edit mode
-            taskInEditId: -1,
+            taskInEditId: null,
             // Id of last created task
             lastCreatedId: 2
         };
@@ -112,7 +112,7 @@ class TodoListXP extends React.Component {
             tasks: tasks.map(task => task.id === taskInEditId
                 ? ({ ...task, taskName: newText })
                 : task),
-            taskInEditId: -1
+            taskInEditId: null
         })
     }
     // Update state with sorted tasks
@@ -121,7 +121,7 @@ class TodoListXP extends React.Component {
         const option = event.target.value
         this.setState({
             ...this.state,
-            tasks: tasks.sort(filterTasks(option)),
+            tasks: tasks.sort(sortTasks(option)),
             sortingOption: option
         });
     }
@@ -152,7 +152,7 @@ class TodoListXP extends React.Component {
         }
         Object.freeze(newTask)
         // Sort task as it added 
-        const newTasks = tasks.concat(newTask).sort(filterTasks(sortingOption));
+        const newTasks = tasks.concat(newTask).sort(sortTasks(sortingOption));
         this.setState({
             input: "",
             tasks: newTasks,
@@ -172,7 +172,7 @@ class TodoListXP extends React.Component {
         this.setState(
             {
                 ...this.state,
-                tasks: []
+                tasks: List([])
             }
         )
     }

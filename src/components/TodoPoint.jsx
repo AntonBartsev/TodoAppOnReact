@@ -7,7 +7,9 @@ const todoPointStyle = {
 const todoDateStyle = {
     fontSize: "15px",
     marginBlockStart: "0em",
-    marginBlockEnd: "0em"
+    marginBlockEnd: "0em",
+    paddingLeft: "1rem",
+    paddingTop: "0.15rem"
 }
 
 
@@ -61,7 +63,7 @@ class TodoPoint extends React.Component {
         </li >
         if (bIsEdited)
             return TaskInEditElem
-        else if (!bIsEdited)
+        else
             return DefaultElem
     }
     render() {
@@ -71,8 +73,7 @@ class TodoPoint extends React.Component {
             <button onClick={() => removeTask(todoId)} >X</button>
             <button onClick={this.toggleImportant} >!</button>
             <button onClick={this.toggleDone}>✓</button>
-            &nbsp;&nbsp;
-                <p style={todoDateStyle}>{todoDate}</p>
+            <p style={todoDateStyle}>{todoDate}</p>
         </div>
     }
 }

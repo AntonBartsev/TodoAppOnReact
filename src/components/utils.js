@@ -2,7 +2,7 @@ const formatDate = (todoPoint) => {
     return todoPoint.date.toUTCString().slice(0, 22)
 }
 // Sort users by several categories
-const filterTasks = (sortingOption) => {
+const sortTasks = (sortingOption) => {
     switch (sortingOption) {
         // Sort by name ascending 
         case "Name asc":
@@ -17,8 +17,8 @@ const filterTasks = (sortingOption) => {
         case "Older":
             return (task1, task2) => (task1.date - task2.date)
         default:
-            console.log("'Sort by' opt set or somthg went wrong")
+            console.log("'Sort by' opt set or somthng went wrong")
     }
 }
 const sortingOptions = ["Sort by", "Newer", "Older", "Name asc", "Name desc"]
-export { formatDate, filterTasks, sortingOptions };
+export { formatDate, sortTasks, sortingOptions };
